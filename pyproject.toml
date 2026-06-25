@@ -1,0 +1,17 @@
+[project]
+name = "aow4-forge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "customtkinter>=6.0.0",
+    "pyautogui>=0.9.54",
+]
+
+[dependency-groups]
+dev = [
+    "cx-freeze>=8.6.4",
+    "ruff>=0.15.19",
+    "ty>=0.0.53",
+]
