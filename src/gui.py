@@ -1,9 +1,8 @@
 """Building the GUI"""
 
-import time
 import customtkinter as ctk
 from PIL import Image
-from automate import auto_forge
+from src.automate import auto_forge
 
 
 class ForgeApp(ctk.CTk):
@@ -19,9 +18,11 @@ class ForgeApp(ctk.CTk):
         self.iconbitmap("assets/favicon.ico")
 
         # self.configure(fg_color="#571322")
-        self.bg_image=ctk.CTkImage(Image.open("assets/forge_background.png"), size=(300,300))
-        self.bg_label = ctk.CTkLabel(self,text="", image=self.bg_image)
-        self.bg_label.place(x=0,y=0)
+        self.bg_image = ctk.CTkImage(
+            Image.open("assets/forge_background.png"), size=(300, 300)
+        )
+        self.bg_label = ctk.CTkLabel(self, text="", image=self.bg_image)
+        self.bg_label.place(x=0, y=0)
 
         self.geometry("300x200")
         self.resizable(False, False)
@@ -68,10 +69,27 @@ class ForgeApp(ctk.CTk):
 
     def start_automation(self):
         """Runs when the start button is pressed, activates the automation and updates the status label."""
-        self.status_label.configure(text="STATUS: FORGING", fg_color="orange")
+        self.update_status(1)
         self.update_idletasks()
-        auto_forge()
-        self.status_label.configure(text="STATUS: FINISHED", fg_color="green")
+        self.update_status(auto_forge())
+
+    def update_status(self, status: int):
+        """Update the Status Label"""
+        match status:
+            case 0:
+                status_string = "STATUS: READY"
+                status_color = "white"
+            case 1:
+                status_string = "STATUS: FORGING"
+                status_color = "orange"
+            case 2:
+                status_string = "STATUS: COMPLETE"
+                status_color = "green"
+            case -1:
+                status_string = "STATUS: ABORTED"
+                status_color = "red"
+
+        self.status_label.configure(text=status_string, fg_color=status_color)
 
 
 if __name__ == "__main__":
