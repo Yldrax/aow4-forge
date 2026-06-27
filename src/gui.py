@@ -37,20 +37,20 @@ class ForgeApp(ctk.CTk):
             fg_color="#005484",
         )
 
-        # Delay Slider
-        self.delay = 1.0
-        self.delay_slider = ctk.CTkSlider(
+        # Speed Slider
+        self.speed = 3
+        self.speed_slider = ctk.CTkSlider(
             self,
-            from_=0.0,  # ty:ignore[invalid-argument-type]
-            to=2.0,  # ty:ignore[invalid-argument-type]
-            number_of_steps=20,
+            from_= 1,
+            to=5,
+            number_of_steps=4,
             command=self.slider_changed
         )
-        self.delay_slider.set(1.0)
+        self.speed_slider.set(3)
 
         self.delay_label = ctk.CTkLabel(
             self,
-            text=f"Delay: 1.0s",
+            text="Speed: 3",
             font=ctk.CTkFont(family="Arial", size=16, weight="bold"),
             padx=8,
             text_color="#F2F0EF",
@@ -85,22 +85,22 @@ class ForgeApp(ctk.CTk):
         self.grid_rowconfigure(index=1, weight=1)
 
         self.headline.grid(row=0, column=0, pady=(16, 8), padx=16, sticky="ew")
-        self.delay_slider.grid(row=1, column=0, pady=(8,0))
+        self.speed_slider.grid(row=1, column=0, pady=(8,0))
         self.delay_label.grid(row=2, column=0, pady=(0,8))
         self.start_button.grid(row=3, column=0, pady=(8, 8))
         self.status_label.grid(row=4, column=0, pady=(8, 16))
 
     def slider_changed(self, value):
         """Tracking the Delay Slider"""
-        self.delay = round(value, 1)
-        self.delay_label.configure(text=f"Delay: {self.delay}s")
+        self.speed = round(value)
+        self.delay_label.configure(text=f"Speed: {self.speed}")
 
 
     def start_automation(self):
         """Runs when the start button is pressed, activates the automation and updates the status label."""
         self.update_status(1)
         self.update_idletasks()
-        self.update_status(auto_forge(self.delay))
+        self.update_status(auto_forge(self.speed))
         self.focus_force()
 
     def update_status(self, status: int):

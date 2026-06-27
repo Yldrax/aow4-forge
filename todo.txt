@@ -1,7 +1,7 @@
-# Add GUI elements for speed slection
+# DONE Add GUI elements for speed slection
 
-# Test Crafting ingame with clickign enabled
-# Add Detection if Forge button greyed out to end automation
+# DONE Test Crafting ingame with clickign enabled
+# DONE Add Detection if Forge button greyed out to end automation -> use pyautogui pixelmatchesColor
 
 # Add GUI elements for dismantle option
 # Add Dismantle Movement Prototype
