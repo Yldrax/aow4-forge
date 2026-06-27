@@ -19,9 +19,9 @@ def auto_forge(speed: int = 3, dismantle=False) -> int:
 
     # For switching between forging and dismantling
     essence_empty = False
-    forged = False
-    arsenal_empty = False
-    dismantled = False
+    # forged = False
+    # arsenal_empty = False
+    # dismantled = False
 
     def on_press(key):
         """For pynput keyboard listener"""
