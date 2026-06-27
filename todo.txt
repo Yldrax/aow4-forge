@@ -1,0 +1,10 @@
+# DONE Add GUI elements for speed slection
+
+# DONE Test Crafting ingame with clickign enabled
+# DONE Add Detection if Forge button greyed out to end automation -> use pyautogui pixelmatchesColor
+
+# Add GUI elements for dismantle option
+# Add Dismantle Movement Prototype
+# Add Detection when Armory empty
+
+# Combine Crafting and Dismantling with option logic and infinite loop one after the other until nothing craftable or dismantable
