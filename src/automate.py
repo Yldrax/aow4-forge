@@ -10,7 +10,7 @@ import pyautogui as pag
 pag.FAILSAFE = True  # Default but better be safe lol
 
 
-def auto_forge(speed: int = 1, dismantle=False) -> int:
+def auto_forge(delay: float = 1.0, dismantle=False) -> int:
     """Automates the Forging, returns Status Code for Display"""
     stop_event = threading.Event()
     status_code = 2
@@ -34,7 +34,7 @@ def auto_forge(speed: int = 1, dismantle=False) -> int:
 
     ### Time to Focus AOW4 Window but click into it just in case
     sleep(1)
-    pag.moveTo(pos_center[0], pos_center[1], speed)
+    pag.moveTo(pos_center[0], pos_center[1])
     pag.click()
 
     def forge_loop():
@@ -46,19 +46,22 @@ def auto_forge(speed: int = 1, dismantle=False) -> int:
                     status_code = -1
                     break
 
-                pag.moveTo(pos_anvil[0], pos_anvil[1], speed)
-                # pag.click()
+                pag.moveTo(pos_anvil[0], pos_anvil[1], delay)
                 if stop_event.is_set():
                     status_code = -1
                     break
-
-                pag.moveTo(pos_dagger[0], pos_dagger[1], speed)
                 # pag.click()
+
+                pag.moveTo(pos_dagger[0], pos_dagger[1], delay)
                 if stop_event.is_set():
                     status_code = -1
                     break
+                # pag.click()
 
-                pag.moveTo(pos_forge[0], pos_forge[1], speed)
+                pag.moveTo(pos_forge[0], pos_forge[1], delay)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
                 # pag.click()
 
         except KeyboardInterrupt, pag.FailSafeException:

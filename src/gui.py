@@ -24,7 +24,7 @@ class ForgeApp(ctk.CTk):
         self.bg_label = ctk.CTkLabel(self, text="", image=self.bg_image)
         self.bg_label.place(x=0, y=0)
 
-        self.geometry("300x200")
+        self.geometry("300x300")
         self.resizable(False, False)
 
         ### Widgets
@@ -37,6 +37,26 @@ class ForgeApp(ctk.CTk):
             fg_color="#005484",
         )
 
+        # Delay Slider
+        self.delay = 1.0
+        self.delay_slider = ctk.CTkSlider(
+            self,
+            from_=0.0,  # ty:ignore[invalid-argument-type]
+            to=2.0,  # ty:ignore[invalid-argument-type]
+            number_of_steps=20,
+            command=self.slider_changed
+        )
+        self.delay_slider.set(1.0)
+
+        self.delay_label = ctk.CTkLabel(
+            self,
+            text=f"Delay: 1.0s",
+            font=ctk.CTkFont(family="Arial", size=16, weight="bold"),
+            padx=8,
+            text_color="#F2F0EF",
+            fg_color="black"
+        )
+
         # Start Button
         self.start_button = ctk.CTkButton(
             self,
@@ -47,6 +67,7 @@ class ForgeApp(ctk.CTk):
             text_color="#F2F0EF",
             font=ctk.CTkFont(family="Arial", size=32, weight="bold"),
         )
+        
 
         # Status label
         self.status_label = ctk.CTkLabel(
@@ -63,15 +84,24 @@ class ForgeApp(ctk.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(index=1, weight=1)
 
-        self.headline.grid(row=0, column=0, padx=16, pady=(16, 8), sticky="ew")
-        self.start_button.grid(row=1, column=0, pady=(8, 8))
-        self.status_label.grid(row=2, column=0, pady=(8, 16))
+        self.headline.grid(row=0, column=0, pady=(16, 8), padx=16, sticky="ew")
+        self.delay_slider.grid(row=1, column=0, pady=(8,0))
+        self.delay_label.grid(row=2, column=0, pady=(0,8))
+        self.start_button.grid(row=3, column=0, pady=(8, 8))
+        self.status_label.grid(row=4, column=0, pady=(8, 16))
+
+    def slider_changed(self, value):
+        """Tracking the Delay Slider"""
+        self.delay = round(value, 1)
+        self.delay_label.configure(text=f"Delay: {self.delay}s")
+
 
     def start_automation(self):
         """Runs when the start button is pressed, activates the automation and updates the status label."""
         self.update_status(1)
         self.update_idletasks()
-        self.update_status(auto_forge())
+        self.update_status(auto_forge(self.delay))
+        self.focus_force()
 
     def update_status(self, status: int):
         """Update the Status Label"""
