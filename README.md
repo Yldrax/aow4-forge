@@ -21,3 +21,6 @@
 Press the Escape Key (esc) at any time to cancel
 
 Emergency PyautoGUi Failsafe is enabled - move mouse to any screen corner to stop
+
+## License
+This is free software: you can redistribute it and/or modify it under the terms of the **MIT Licnse**. A copy of this license is provided in [`LICENSE.txt`](https://github.com/Yldrax/aow4-forge/blob/master/LICENSE).
