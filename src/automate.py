@@ -4,31 +4,23 @@ import threading
 from time import sleep
 from pynput.keyboard import Listener
 
-# import sys
 import pyautogui as pag
 
-pag.FAILSAFE = True  # Default but better be safe lol
+pag.FAILSAFE = True  # Default but better be safe
 
 
 def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
     """Automates the Forging, returns Status Code for Display"""
-
-    # For Interrupting the Thread
-    stop_event = threading.Event()
     status_code = 2
 
-    # For switching between forging and dismantling
-    essence_empty = False
-    # forged = False
-    arsenal_empty = False
-    # dismantled = False
+    ### For Interrupting the Thread
+    stop_event = threading.Event()
 
-    def on_press(key):
-        """For pynput keyboard listener"""
-        if "esc" in str(key):
-            stop_event.set()
-            return False
-        return None
+    ### For switching between forging and dismantling
+    essence_empty = False
+    forged = False
+    arsenal_empty = False
+    disenchanted = False
 
     ### Get the positions of the Buttons based on Screen Size
     screen_w, screen_h = pag.size()
@@ -55,10 +47,21 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
     pag.click()
     sleep(button_time)
 
+    ### Pynput keyboard Listener for Interrupting
+    def on_press(key):
+        """Detect Pressing esc"""
+        if "esc" in str(key):
+            stop_event.set()
+            return False
+        return None
+
+    ### Defining the Automation Loops
     def forge_loop():
         """The Forging Loop"""
         nonlocal status_code
         nonlocal essence_empty
+        nonlocal forged
+        nonlocal arsenal_empty
         try:
             while not essence_empty:
                 if stop_event.is_set():
@@ -80,7 +83,7 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                 sleep(button_time)
 
                 if pag.pixelMatchesColor(
-                    pos_rgb_forge[0], pos_rgb_forge[1], (0, 0, 0), tolerance=80
+                    pos_rgb_forge[0], pos_rgb_forge[1], (39, 39, 39), tolerance=2
                 ):
                     essence_empty = True
                     continue
@@ -91,6 +94,8 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     break
                 pag.click()
                 sleep(button_time)
+                forged = True
+                arsenal_empty = False
 
         except KeyboardInterrupt, pag.FailSafeException:
             stop_event.set()
@@ -106,6 +111,8 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
         """The Disenchanting Loop"""
         nonlocal status_code
         nonlocal arsenal_empty
+        nonlocal disenchanted
+        nonlocal essence_empty
         try:
             pag.moveTo(pos_arsenal[0], pos_arsenal[1])
             pag.click()
@@ -123,7 +130,6 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                 pag.click()
                 sleep(button_time)
 
-                print(pag.pixel(pos_rgb_disenchant[0], pos_rgb_disenchant[1]))
                 if pag.pixelMatchesColor(
                     pos_rgb_disenchant[0],
                     pos_rgb_disenchant[1],
@@ -139,6 +145,8 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     break
                 pag.click()
                 sleep(button_time)
+                disenchanted = True
+                essence_empty = False
 
         except KeyboardInterrupt, pag.FailSafeException:
             stop_event.set()
@@ -150,19 +158,51 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
 
         return 2
 
-    forge_thread = threading.Thread(target=forge_loop)
-    forge_thread.start()
-    # disenchant_thread = threading.Thread(target=disenchant_loop)
-    # disenchant_thread.start()
+    ### Calling the Loops based on setting
+    if not disenchant:
+        # Just Forge
+        forge_thread = threading.Thread(target=forge_loop)
+        forge_thread.start()
 
-    with Listener(on_press=on_press) as _listener:
-        stop_event.wait()
+        with Listener(on_press=on_press) as _listener:
+            stop_event.wait()
 
-    forge_thread.join()
-    # disenchant_thread.join()
+        forge_thread.join()
+
+    elif disenchant:
+        finished = False
+        while not finished:
+            # Forge
+            forge_thread = threading.Thread(target=forge_loop)
+            forge_thread.start()
+            with Listener(on_press=on_press) as _listener:
+                stop_event.wait()
+            forge_thread.join()
+
+            if status_code == -1:
+                return -1
+            stop_event.clear()
+
+            # Disenchant
+            disenchant_thread = threading.Thread(target=disenchant_loop)
+            disenchant_thread.start()
+            with Listener(on_press=on_press) as _listener:
+                stop_event.wait()
+            disenchant_thread.join()
+
+            if status_code == -1:
+                return -1
+            stop_event.clear()
+
+            # If nothing to forge nor disenchant -> finished
+            finished = not forged and not disenchanted
+
+            # Reset Variables
+            forged = False
+            disenchanted = False
 
     return status_code
 
 
 if __name__ == "__main__":
-    print(auto_forge())
+    print(auto_forge(disenchant=True))

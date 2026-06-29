@@ -131,7 +131,6 @@ class ForgeApp(ctk.CTk):
         """Runs on pressing start button, activates the automation and updates the status label."""
         self.update_status(1)
         self.update_idletasks()
-        print(self.disenchant)
         self.update_status(auto_forge(self.speed, self.disenchant))
         self.focus_force()
 
