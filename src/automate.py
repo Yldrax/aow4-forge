@@ -10,7 +10,7 @@ import pyautogui as pag
 pag.FAILSAFE = True  # Default but better be safe lol
 
 
-def auto_forge(speed: int = 3, dismantle=False) -> int:
+def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
     """Automates the Forging, returns Status Code for Display"""
 
     # For Interrupting the Thread

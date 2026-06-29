@@ -3,7 +3,7 @@
 # DONE Test Crafting ingame with clickign enabled
 # DONE Add Detection if Forge button greyed out to end automation -> use pyautogui pixelmatchesColor
 
-# Add GUI elements for dismantle option
+# DONE Add GUI elements for disenchant option
 # Add Dismantle Movement Prototype
 # Add Detection when Armory empty
 

@@ -17,15 +17,15 @@ class ForgeApp(ctk.CTk):
         self.title("Pantheon Forge")
         self.iconbitmap("assets/favicon.ico")
 
-        # self.configure(fg_color="#571322")
+        self.geometry("300x300")
+        self.resizable(False, False)
+
+        # Background Image
         self.bg_image = ctk.CTkImage(
             Image.open("assets/forge_background.png"), size=(300, 300)
         )
         self.bg_label = ctk.CTkLabel(self, text="", image=self.bg_image)
         self.bg_label.place(x=0, y=0)
-
-        self.geometry("300x300")
-        self.resizable(False, False)
 
         ### Widgets
         # Header
@@ -38,19 +38,41 @@ class ForgeApp(ctk.CTk):
         )
 
         # Speed Slider
-        self.speed = 3
+        self.speed_frame = ctk.CTkFrame(self)
+
         self.speed_slider = ctk.CTkSlider(
-            self, from_=1, to=5, number_of_steps=4, command=self.slider_changed
+            self.speed_frame,
+            from_=1,
+            to=5,
+            number_of_steps=4,
+            command=self.slider_changed,
         )
+        self.speed = 3
         self.speed_slider.set(3)
 
-        self.delay_label = ctk.CTkLabel(
-            self,
+        self.speed_label = ctk.CTkLabel(
+            self.speed_frame,
             text="Speed: 3",
             font=ctk.CTkFont(family="Arial", size=16, weight="bold"),
             padx=8,
             text_color="#F2F0EF",
-            fg_color="black",
+            fg_color="#2b2b2b",
+        )
+
+        # Disenchant Option
+        self.disenchant_frame = ctk.CTkFrame(self)
+
+        self.disenchant = False
+        self.switch_var = ctk.StringVar(value="off")
+
+        self.d_switch = ctk.CTkSwitch(
+            self.disenchant_frame,
+            command=self.switch_changed,
+            variable=self.switch_var,
+            onvalue="on",
+            offvalue="off",
+            text="Disenchant",
+            font=ctk.CTkFont(family="Arial", size=16, weight="bold"),
         )
 
         # Start Button
@@ -76,25 +98,41 @@ class ForgeApp(ctk.CTk):
         )
 
         ### Layout
+        # Overall
         self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(index=1, weight=1)
+        self.grid_rowconfigure(index=3, weight=1)
 
+        # Main Widgets
         self.headline.grid(row=0, column=0, pady=(16, 8), padx=16, sticky="ew")
-        self.speed_slider.grid(row=1, column=0, pady=(8, 0))
-        self.delay_label.grid(row=2, column=0, pady=(0, 8))
-        self.start_button.grid(row=3, column=0, pady=(8, 8))
-        self.status_label.grid(row=4, column=0, pady=(8, 16))
+        self.disenchant_frame.grid(row=1, column=0, pady=(8, 8))
+        self.speed_frame.grid(row=2, column=0, pady=(8, 8))
+        self.start_button.grid(row=4, column=0, pady=(8, 8))
+        self.status_label.grid(row=5, column=0, pady=(8, 16))
+
+        # Subwidgets
+        self.speed_slider.grid(row=0, column=0)
+        self.speed_label.grid(row=0, column=1)
+        self.d_switch.grid(row=0, column=0, padx=8, pady=4)
 
     def slider_changed(self, value):
         """Tracking the Delay Slider"""
         self.speed = round(value)
-        self.delay_label.configure(text=f"Speed: {self.speed}")
+        self.speed_label.configure(text=f"Speed: {self.speed}")
+
+    def switch_changed(self):
+        """Tracking the Disenchant Switch"""
+        match self.switch_var.get():
+            case "on":
+                self.disenchant = True
+            case "off":
+                self.disenchant = False
 
     def start_automation(self):
         """Runs on pressing start button, activates the automation and updates the status label."""
         self.update_status(1)
         self.update_idletasks()
-        self.update_status(auto_forge(self.speed))
+        print(self.disenchant)
+        self.update_status(auto_forge(self.speed, self.disenchant))
         self.focus_force()
 
     def update_status(self, status: int):
