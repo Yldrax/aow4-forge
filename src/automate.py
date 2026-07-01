@@ -31,7 +31,14 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
 
     pos_dagger = (screen_w * (14 / 64), screen_h * (26 / 64))
     pos_disenchant = (screen_w * (21 / 128), screen_h * (111 / 128))
-    pos_arsenal_top = (screen_w * (21 / 128), screen_h * (37 / 128))
+    pos_arsenal_1 = (screen_w * (21 / 128), screen_h * (37 / 128))
+    pos_arsenal_2 = (screen_w * (21 / 128), screen_h * (46 / 128))
+    pos_arsenal_3 = (screen_w * (21 / 128), screen_h * (55 / 128))
+    pos_arsenal_4 = (screen_w * (21 / 128), screen_h * (65 / 128))
+    pos_arsenal_5 = (screen_w * (21 / 128), screen_h * (74 / 128))
+    pos_arsenal_6 = (screen_w * (21 / 128), screen_h * (83 / 128))
+    pos_arsenal_7 = (screen_w * (21 / 128), screen_h * (92 / 128))
+    pos_arsenal_8 = (screen_w * (21 / 128), screen_h * (102 / 128))
 
     pos_center = (screen_w * (1 / 2), screen_h * (40 / 64))
     pos_rgb_forge = (round(screen_w * (128 / 256)), round(screen_h * (223 / 256)))
@@ -39,11 +46,11 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
 
     ### Calc the delay times based on speed setting. Anvil slection loads slow
     anvil_time = 1.5 - (0.3 * speed)
-    button_time = 0
+    button_time = 0.5 - (0.1 * speed)
 
     ### Time to Focus AOW4 Window but click into it just in case
     sleep(1)
-    pag.moveTo(pos_center[0], pos_center[1])
+    pag.moveTo(pos_center)
     pag.click()
     sleep(button_time)
 
@@ -68,19 +75,18 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     status_code = -1
                     break
 
-                pag.moveTo(pos_anvil[0], pos_anvil[1])
+                pag.moveTo(pos_anvil)
                 if stop_event.is_set():
                     status_code = -1
                     break
                 pag.click()
                 sleep(anvil_time)
 
-                pag.moveTo(pos_dagger[0], pos_dagger[1])
+                pag.moveTo(pos_dagger)
                 if stop_event.is_set():
                     status_code = -1
                     break
                 pag.click()
-                sleep(button_time)
 
                 if pag.pixelMatchesColor(
                     pos_rgb_forge[0], pos_rgb_forge[1], (39, 39, 39), tolerance=2
@@ -88,12 +94,11 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     essence_empty = True
                     continue
 
-                pag.moveTo(pos_forge[0], pos_forge[1], button_time)
+                pag.moveTo(pos_forge)
                 if stop_event.is_set():
                     status_code = -1
                     break
                 pag.click()
-                sleep(button_time)
                 forged = True
                 arsenal_empty = False
 
@@ -114,7 +119,7 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
         nonlocal disenchanted
         nonlocal essence_empty
         try:
-            pag.moveTo(pos_arsenal[0], pos_arsenal[1])
+            pag.moveTo(pos_arsenal)
             pag.click()
             sleep(anvil_time)
 
@@ -123,12 +128,56 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     status_code = -1
                     break
 
-                pag.moveTo(pos_arsenal_top[0], pos_arsenal_top[1])
+                pag.moveTo(pos_arsenal_1)
                 if stop_event.is_set():
                     status_code = -1
                     break
                 pag.click()
-                sleep(button_time)
+
+                if pag.pixelMatchesColor(
+                    pos_rgb_disenchant[0],
+                    pos_rgb_disenchant[1],
+                    (0, 0, 0),
+                    tolerance=80,
+                ):
+                    arsenal_empty = True
+                    continue
+
+                pag.moveTo(pos_arsenal_2)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_3)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_4)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_5)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_6)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_7)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
+                pag.moveTo(pos_arsenal_8)
+                if stop_event.is_set():
+                    status_code = -1
+                    break
+                pag.click()
 
                 if pag.pixelMatchesColor(
                     pos_rgb_disenchant[0],
@@ -144,7 +193,7 @@ def auto_forge(speed: int = 3, disenchant: bool = False) -> int:
                     status_code = -1
                     break
                 pag.click()
-                sleep(button_time)
+                sleep(anvil_time)
                 disenchanted = True
                 essence_empty = False
 
