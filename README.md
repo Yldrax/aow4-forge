@@ -2,6 +2,7 @@
 ### AoW4 Item Forge Automation for Convenient Pantheon Point Farming
 
 ## Features
+![Promo Image - XP Gain Example](https://github.com/Yldrax/aow4-forge/blob/master/assets/promo.png "XP Gain Example")
 - Craft all your essence into tier I daggers
 - Optionally disenchant your whole arsenal
 - Automatic switching between forging and disenchanting until ressources are empty
